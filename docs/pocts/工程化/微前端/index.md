@@ -5,7 +5,7 @@ tags:
  - 工程化
 top: 1
 sidebar: false
-sticky: 1
+sticky: false
 date: 2023-09-02
 ---
 # 微前端子应用中渲染父应用组件技术方案
