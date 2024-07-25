@@ -250,7 +250,7 @@ const disabledTime = () => {
 
 ```
 
-上面的代码都是可用的，但当我处理第五种规则`自定义多时段` 时，才发现有坑，我当然可以在写一套适配`自定义多时段` 规则的方案，但是也意味着我我需要至少维护 5 套规则的代码，感觉好像有点开始恶心了。。。
+上面的代码都是可用的，但当我处理第五种规则`自定义多时段` 时，才发现有坑，我当然可以在写一套适配`自定义多时段` 规则的方案，但是也意味着我我需要至少维护 5 套规则的代码，感觉好像有点开始恶心了...
 
 维护吃力不说，调试验证也很复杂。能不能设计一套方案，所有的规则共用呢？我在看上面第四个规则的代码时，有一行代码给了我灵感！
 
@@ -290,7 +290,7 @@ const disabledRangeTimes = ["08:00:00-09:00:00", "09:45:00-10:30:00", "12:30:40-
 
 首先了解一个前提，antd 时间选择器 `disabledTime` 属性，如果禁用整个小时，比如 8，那8 点这个小时是无法选择的，分也同理，可以推断出一些规律：
 
-*   如果开始时间是”HH:00:00” 或者 结束时间是”HH:59:59”，那么这整个小时被禁用，不需要处理分和秒
+*   如果开始时间是 `"HH:00:00"` 或者 结束时间是 `"HH:59:59"`，那么这整个小时被禁用，不需要处理分和秒
 *   "12:30:40-14:45:50" 开始时间和结束时间中间有完整的一小时，那么这整个小时被禁用，不需要处理分和秒
 
 完整的小时处理完成后就该分钟了，以 `"09:45:00-10:30:00"` 为例：
@@ -383,7 +383,7 @@ const isTimeDisabled = isDisabledTime("12:30:00");
 ```
 
 ### 完整代码
-在实际的实现方案中，我对传入的时间格式做了更多兼容，支持传入 `"HH:MM:SS-HH:MM:SS" | "HH:MM-HH:MM" | "HH-HH”` 多种格式
+在实际的实现方案中，我对传入的时间格式做了更多兼容，支持传入 `"HH:MM:SS-HH:MM:SS" | "HH:MM-HH:MM" | "HH-HH"` 多种格式
 
 可以通过正则对格式进行校验，gpt 给我生成的正则：`/^(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d-(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d|(?:[01]\d|2[0-3])-(?:[01]\d|2[0-3])|(?:[01]\d|2[0-3]):[0-5]\d-(?:[01]\d|2[0-3]):[0-5]\d)$/`
 
@@ -413,73 +413,85 @@ const disabledRangeTimes = [
   "16-18",
 ];
 
+
+// 导出一个名为 parseTime 的函数，参数是一个时间字符串，格式为 "HH:MM:SS"
 export function parseTime(time: string) {
+  // 将时间字符串按冒号分隔，并将分隔后的每个部分转换为数字
   const parts = time.split(":").map(Number);
-  while (parts.length < 3) parts.push(0); // Ensure hours, minutes, and seconds are present
-  return parts;
+  // 确保 parts 数组中至少包含小时（h）、分钟（m）和秒（s），不足的部分填充 0
+  while (parts.length < 3) parts.push(0);
+  return parts; // 返回一个包含小时、分钟和秒的数组
 }
 
+// 添加分钟范围到结果对象中
 function addMinutesRange(
-  result: Record<string, any>,
-  h: string,
-  startMinute: number,
-  endMinute: number
+  result: Record<string, any>, // 结果对象
+  h: string, // 小时部分的字符串
+  startMinute: number, // 开始的分钟数
+  endMinute: number, // 结束的分钟数
 ) {
-  if (!startMinute && endMinute == 59) return;
-  // if (startMinute == 0 && endMinute == 0) return;
+  if (!startMinute && endMinute == 59) return; // 如果范围为整个小时，则不处理
   for (let minute = startMinute; minute <= endMinute; minute++) {
-    if (!result[h]) {
+    if (!result[h]) { // 如果结果对象中还没有该小时的数据，初始化为一个空数组
       result[h] = [];
     }
-    result[h].push(minute);
+    result[h].push(minute); // 将分钟数添加到结果对象中对应的小时数组中
   }
 }
 
+// 一个将时间字符串转换为数组的函数
 const beforeTransFunc = (timeString: string | string[], isSingle?: boolean) => {
   let timeArray: string[] = [];
   try {
+    // 如果时间字符串是一个数组，直接赋值给 timeArray，否则尝试将其解析为 JSON 数组
     timeArray = Array.isArray(timeString)
       ? timeString
       : JSON.parse(timeString as string);
   } catch (error) {
+    // 如果解析失败，将时间字符串按逗号分隔
     timeArray = (timeString as string).split(",");
   }
   if (isSingle) {
+    // 如果 isSingle 为 true，将每个时间段改为 "start-end" 形式
     timeArray = timeArray.map((item) => `${item}-${item}`);
   }
-  return timeArray;
+  return timeArray; // 返回处理后的时间数组
 };
 
+// 导出一个名为 convertTimeRanges 的函数，用于转换时间范围字符串
 export function convertTimeRanges(
   timeString: string | string[],
-  isSingle?: boolean
+  isSingle?: boolean,
 ) {
-  if (!timeString) return undefined;
+  if (!timeString) return undefined; // 如果时间字符串为空，返回 undefined
+
   // 先将字符串按逗号拆分为数组
   const timeArray: string[] = beforeTransFunc(timeString, isSingle);
+  console.log("时间选择 convertTimeRanges", timeArray);
 
+  // 定义一个结果对象，初始化时包含一个 "HH" 属性，其值为空数组
   const result: Record<string, number[]> = {
     HH: [],
   };
 
+  // 遍历时间数组的每一个时间范围
   timeArray.forEach((range) => {
+    // 将时间范围按 "-" 拆分为起始时间和结束时间
     const [start, end] = range.split("-");
+    // 分别解析起始时间和结束时间，得到小时、分钟和秒
     const [sh, sm, ss] = parseTime(start);
     const [eh, em, es] = parseTime(end);
 
-    if (sh === eh) {
-      // Same hour range
+    if (sh === eh) { // 如果起始小时和结束小时相同
       if (sm === em) {
-        // if (ss === es) {
-        //   result[`${sh}:${sm}`] = [ss];
-        // }
-        // Same minute range
+        // 如果起始分钟和结束分钟相同，处理秒
         addMinutesRange(result, `${sh}:${sm}`, ss, es);
       } else {
-        // Different minute range
+        // 如果起始分钟和结束分钟不同，处理分钟和秒
         addMinutesRange(result, `${sh}:${sm}`, ss, 59);
         addMinutesRange(result, `${eh}:${em}`, 0, es);
         if (em - sm > 1) {
+          // 如果分钟范围跨越多个完整的分钟
           for (let m = sm + 1; m < em; m++) {
             !result[sh] && (result[sh] = []);
             result[sh].push(m);
@@ -487,9 +499,9 @@ export function convertTimeRanges(
         }
       }
     } else {
-      const endWith59 = em == 59 && es == 59;
-      const endWith0 = !em && !es;
-      const startWith0 = !sm && !ss;
+      const endWith59 = em == 59 && es == 59; // 结束时间为某小时的整点 59:59
+      const endWith0 = !em && !es; // 结束时间为某小时的 00:00
+      const startWith0 = !sm && !ss; // 起始时间为某小时的 00:00
 
       // 处理整小时的情况
       if (eh - sh > 1) {
@@ -498,15 +510,15 @@ export function convertTimeRanges(
         }
       }
 
-      if (endWith59) result["HH"].push(eh);
-      if (startWith0) result["HH"].push(sh);
+      if (endWith59) result["HH"].push(eh); // 如果结束时间是整点 59 分，将结束小时加入结果
+      if (startWith0) result["HH"].push(sh); // 如果起始时间是整点 00 分，将起始小时加入结果
 
       // 处理 HH:00:00
       // endWith0 && (result[`${eh}:0`] = [0]);
 
-      // 处理开始的分钟
+      // 处理起始时间的分钟
       addMinutesRange(result, `${sh}:${sm}`, ss, 59);
-      // 处理结束的分钟
+      // 处理结束时间的分钟
       addMinutesRange(result, `${eh}:${em}`, 0, es);
 
       // 处理中间的分钟
@@ -518,7 +530,7 @@ export function convertTimeRanges(
       }
 
       if (sm > 0 && sm < 59) {
-        //   如果当前小时在"HH"中，说明已经处理过，是重合的部分
+        // 如果当前小时在"HH"中，说明已经处理过，是重合的部分
         if (result["HH"].includes(sh)) return;
         for (let m = sm + 1; m < 60; m++) {
           !result[sh] && (result[sh] = []);
@@ -528,12 +540,41 @@ export function convertTimeRanges(
     }
   });
 
-  console.log("时间选择 convertTimeRanges", timeArray, result);
-
-  return result;
+  return result; // 返回最终的结果对象
 }
 
 console.log(convertTimeRanges(disabledRangeTimes));
+```
+
+在组件中使用
+
+```tsx
+const disabledTimeMapMemo =useMemo(()=> convertTimeRanges([
+  "08:00:00-09:00:00",
+  "09:45:00-10:30:00",
+  "12:30:40-14:45:50",
+  "15:10-15:30",
+  "16-18",
+]));
+
+// 当传入时间为指定时间时，第二参数 true，会自动转换为时间段格式
+// const disabledTimeMapMemo =useMemo(()=> convertTimeRanges(["08:00:00", "10:20:00", "12:30:50"],true));
+
+const disabledTime = useCallback(
+  (d) => {
+    return {
+      disabledHours: () => disabledTimeMapMemo?.["HH"] || [],
+      disabledMinutes: (h: number) => disabledTimeMapMemo?.[h] || [],
+      disabledSeconds: (h: number, m: number) =>
+        disabledTimeMapMemo?.[`${h}:${m}`] || [],
+    };
+  },
+  [disabledTimeMapMemo]
+);
+
+const App = ()=>{
+   return (<TimePicker disabledTime={disabledTime}} />)
+}
 ```
 
 Done!
