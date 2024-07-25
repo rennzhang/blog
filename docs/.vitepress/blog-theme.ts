@@ -149,6 +149,13 @@ export const blogTheme = getThemeConfig({
   },
   friend: [
     {
+      nickname: '前端导航',
+      des: '丰富的前端生态导航站点',
+      avatar:
+        'https://cdn.icon-icons.com/icons2/1537/PNG/512/1562687-code-computer-creative-html-process-technology-web-development_107058.png',
+      url: 'https://no.buging.cn/'
+    },
+    {
       nickname: '大前端面试宝典 - 图解前端',
       des: '宇宙最强的前端面试指南',
       avatar:
@@ -182,8 +189,7 @@ export const blogTheme = getThemeConfig({
       { type: 'text', content: '👇公众号👇---👇 微信 👇' },
       {
         type: 'image',
-        src:""
-        // src: 'https://img.cdn.sugarat.top/mdImg/MTYxNTAxODc2NTIxMA==615018765210'
+        src: 'https://img.cdn.sugarat.top/mdImg/MTYxNTAxODc2NTIxMA==615018765210'
       },
       {
         type: 'text',
