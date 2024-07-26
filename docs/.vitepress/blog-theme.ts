@@ -179,30 +179,30 @@ export const blogTheme = getThemeConfig({
     categoryId: 'DIC_kwDOKTkGhc4CZXQD',
     inputPosition: 'top'
   },
-  popover: {
-    title: '公告',
-    body: [
-      {
-        type: 'text',
-        content: 'QQ交流群：681489336 🎉🎉'
-      },
-      { type: 'text', content: '👇公众号👇---👇 微信 👇' },
-      {
-        type: 'image',
-        src: 'https://img.cdn.sugarat.top/mdImg/MTYxNTAxODc2NTIxMA==615018765210'
-      },
-      {
-        type: 'text',
-        content: '欢迎大家加群&私信交流'
-      },
-      {
-        type: 'button',
-        content: '博客',
-        link: 'https://sugarat.top'
-      }
-    ],
-    duration: 0
-  },
+  // popover: {
+  //   title: '公告',
+  //   body: [
+  //     {
+  //       type: 'text',
+  //       content: 'QQ交流群：681489336 🎉🎉'
+  //     },
+  //     { type: 'text', content: '👇公众号👇---👇 微信 👇' },
+  //     {
+  //       type: 'image',
+  //       src: 'https://img.cdn.sugarat.top/mdImg/MTYxNTAxODc2NTIxMA==615018765210'
+  //     },
+  //     {
+  //       type: 'text',
+  //       content: '欢迎大家加群&私信交流'
+  //     },
+  //     {
+  //       type: 'button',
+  //       content: 'github',
+  //       link: 'https://github.com/rennzhang'
+  //     }
+  //   ],
+  //   duration: 0
+  // },
   search: {
     mode: false,
     btnPlaceholder: 'Search',
