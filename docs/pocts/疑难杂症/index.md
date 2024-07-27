@@ -3,13 +3,13 @@ tags:
  - 疑难杂症
  - Ant Design
  - React
-top: 1
+# top: 1
 sidebar: false
 sticky: 1
 date: 2024-07-25 18:30:04
 ---
 
-# 使用字典表管理Antd 时间选择器禁用时间，支持多时段禁用
+# 使用字典表管理 Antd 时间选择器禁用时间，支持多时段禁用
 
 你是否遇到过这样的需求：在 Ant Design 的时间选择器中使用 disabledTime 属性来禁用某个时间？或者禁用过去某个时间段、未来某个时间段，甚至多个时间段？在我基于 Appsmith 进行二次开发时，就碰到了这样一个难题。
 

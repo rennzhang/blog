@@ -6,7 +6,7 @@ tags:
 top: 2
 sidebar: false
 sticky: false
-data: 2023-9-22 22:07:19
+date: 2023-9-22 22:07:19
 ---
 
 # 为什么 Vue2 this 能够直接获取到 data 和 methods
