@@ -1,83 +1,88 @@
 {
-	"name": "@blog/theme",
-	"version": "0.1.45",
-	"description": "Renkin 的博客",
-	"main": "src/index.ts",
-	"exports": {
-		"./node": {
-			"types": "./node.d.ts",
-			"default": "./node.js"
-		},
-		"./package.json": "./package.json",
-		".": "./src/index.ts"
-	},
-	"files": [
-		"src",
-		"types",
-		"node.js",
-		"node.d.ts"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+git@github.com:rennzhang/blog.git"
-	},
-	"keywords": [
-		"vitepress",
-		"theme",
-		"Renkin"
-	],
-	"author": "sugar",
-	"license": "MIT",
-	"homepage": "https://renkin.cn/",
-	"scripts": {
-		"dev": "npm run build:node && npm run dev:docs",
-		"dev:docs": "vitepress dev docs",
-		"dev:node": "npx tsup src/node.ts --dts --out-dir=./ --watch --external vitepress",
-		"build": "npm run build:node && npm run build:docs",
-		"build:docs": "vitepress build docs",
-		"build:node": "npx tsup src/node.ts --dts --out-dir=./ --external vitepress",
-		"serve": "vitepress serve docs"
-	},
-	"dependencies": {
-		"@mdit-vue/shared": "^0.12.0",
-		"@mermaid-js/mermaid-mindmap": "^9.3.0",
-		"@types/node": "^18.15.11",
-		"@vue/shared": "^3.2.45",
-		"@vueuse/core": "^9.6.0",
-		"codemirror": "^5.65.12",
-		"codemirror-editor-vue3": "^2.3.0",
-		"fast-glob": "^3.2.12",
-		"feed": "^4.2.2",
-		"gray-matter": "^4.0.3",
-		"highlight.js": "^11.7.0",
-		"mermaid": "^10.2.4",
-		"vitepress-plugin-mermaid": "^2.0.13",
-		"vue-command-palette": "^0.1.4"
-	},
-	"devDependencies": {
-		"@element-plus/icons-vue": "^2.1.0",
-		"@iconify/json": "^2.2.115",
-		"element-plus": "^2.3.4",
-		"flexsearch": "^0.7.31",
-		"markdown-it": "^13.0.1",
-		"sass": "^1.56.1",
-		"tsup": " ^6.5.0",
-		"typescript": "^4.8.2",
-		"unocss": "^0.55.7",
-		"unplugin-auto-import": "^0.15.2",
-		"unplugin-icons": "^0.17.0",
-		"unplugin-vue-components": "^0.24.1",
-		"vitepress": "1.0.0-rc.13",
+  "name": "@blog/theme",
+  "version": "0.1.45",
+  "description": "Renkin 的博客",
+  "main": "src/index.ts",
+  "exports": {
+    "./node": {
+      "types": "./node.d.ts",
+      "default": "./node.js"
+    },
+    "./package.json": "./package.json",
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "types",
+    "node.js",
+    "node.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:rennzhang/blog.git"
+  },
+  "keywords": [
+    "vitepress",
+    "theme",
+    "Renkin"
+  ],
+  "author": "sugar",
+  "license": "MIT",
+  "homepage": "https://renkin.cn/",
+  "scripts": {
+    "start": "npm-run-all --parallel prepare-dev watch-content",
+    "prepare-dev": "npm run build-node && vitepress dev docs",
+    "start-node": "tsup src/node.ts --dts --out-dir=./ --watch docs --ext md --external vitepress",
+    "build": "npm-run-all build-node build-get-articles build-docs",
+    "build-docs": "vitepress build docs",
+    "build-node": "tsup src/node.ts --dts --out-dir=./ --external vitepress",
+    "build-get-articles": "tsup src/utils/node/getArticles.ts --out-dir=./src/utils/node",
+    "watch-content": "npm run build-get-articles && nodemon --watch docs --ext md --exec \"node ./src/utils/node/getArticles.js\"",
+    "serve": "vitepress serve docs"
+  },
+
+
+  "dependencies": {
+    "@mdit-vue/shared": "^0.12.0",
+    "@mermaid-js/mermaid-mindmap": "^9.3.0",
+    "@types/node": "^18.15.11",
+    "@vue/shared": "^3.2.45",
+    "@vueuse/core": "^9.6.0",
+    "codemirror": "^5.65.12",
+    "codemirror-editor-vue3": "^2.3.0",
+    "fast-glob": "^3.2.12",
+    "feed": "^4.2.2",
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.7.0",
+    "mermaid": "^10.2.4",
+    "npm-run-all": "^4.1.5",
+    "vitepress-plugin-mermaid": "^2.0.13",
+    "vue-command-palette": "^0.1.4"
+  },
+  "devDependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@iconify/json": "^2.2.115",
+    "element-plus": "^2.3.4",
+    "flexsearch": "^0.7.31",
+    "markdown-it": "^13.0.1",
+    "sass": "^1.56.1",
+    "tsup": " ^6.5.0",
+    "typescript": "^4.8.2",
+    "unocss": "^0.55.7",
+    "unplugin-auto-import": "^0.15.2",
+    "unplugin-icons": "^0.17.0",
+    "unplugin-vue-components": "^0.24.1",
+    "vitepress": "1.0.0-rc.13",
     "vitepress-plugin-pagefind": "0.2.10",
-		"vitepress-plugin-search": "1.0.4-alpha.20",
-		"vitepress-plugin-tabs": "^0.2.0",
-		"vue": "^3.3.4"
-	},
-	"pnpm": {
-		"peerDependencyRules": {
-			"ignoreMissing": [
-				"@algolia/client-search"
-			]
-		}
-	}
+    "vitepress-plugin-search": "1.0.4-alpha.20",
+    "vitepress-plugin-tabs": "^0.2.0",
+    "vue": "^3.3.4"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search"
+      ]
+    }
+  }
 }

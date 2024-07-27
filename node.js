@@ -36,7 +36,7 @@ __export(node_exports, {
 });
 module.exports = __toCommonJS(node_exports);
 
-// node_modules/.pnpm/vitepress-plugin-tabs@0.2.0_vitepress@1.0.0-rc.13_vue@3.3.4/node_modules/vitepress-plugin-tabs/dist/index.js
+// node_modules/.pnpm/vitepress-plugin-tabs@0.2.0_vitepress@1.0.0-rc.13_@algolia+client-search@4.20.0_@types+node@1_jrj763at4zrnd3srokhhhjdsmi/node_modules/vitepress-plugin-tabs/dist/index.js
 var tabsMarker = "=tabs";
 var tabsMarkerLen = tabsMarker.length;
 var ruleBlockTabs = (state, startLine, endLine, silent) => {
@@ -373,25 +373,15 @@ function supportRunExtendsPlugin(config) {
   }
 }
 
-// src/utils/node/theme.ts
-var import_fast_glob = __toESM(require("fast-glob"));
+// src/utils/node/getArticles.ts
+var import_fast_glob = require("fast-glob");
 var import_gray_matter = __toESM(require("gray-matter"));
-var import_fs = __toESM(require("fs"));
 var import_path = __toESM(require("path"));
-function patchDefaultThemeSideBar(cfg) {
-  return cfg?.blog !== false && cfg?.recommend !== false ? {
-    sidebar: [
-      {
-        text: "",
-        items: []
-      }
-    ]
-  } : void 0;
-}
+var import_fs = __toESM(require("fs"));
 var pageMap = /* @__PURE__ */ new Map();
 function getArticles(cfg) {
   const srcDir = cfg?.srcDir || process.argv.slice(2)?.[1] || ".";
-  const files = import_fast_glob.default.sync(`${srcDir}/**/*.md`, { ignore: ["node_modules"] });
+  const files = import_fast_glob.glob.sync(`${srcDir}/**/*.md`, { ignore: ["node_modules"] });
   const data = files.map((v) => {
     let route = v.replace(".md", "");
     if (route.startsWith("./")) {
@@ -411,7 +401,7 @@ function getArticles(cfg) {
     }
     pageMap.set(`/${route}`, v);
     const fileContent = import_fs.default.readFileSync(v, "utf-8");
-    const { data: frontmatter, excerpt } = (0, import_gray_matter.default)(fileContent, {
+    const { data: frontmatter } = (0, import_gray_matter.default)(fileContent, {
       excerpt: true
     });
     const meta = {
@@ -443,6 +433,28 @@ function getArticles(cfg) {
     };
   }).filter((v) => v.meta.layout !== "home");
   return data;
+}
+function getPosts(cfg) {
+  const data = getArticles(cfg);
+  import_fs.default.writeFileSync(
+    import_path.default.join(process.cwd(), "src/data/posts.json"),
+    JSON.stringify(data)
+  );
+  console.log(" pageMap", pageMap, data);
+  return data;
+}
+getPosts();
+
+// src/utils/node/theme.ts
+function patchDefaultThemeSideBar(cfg) {
+  return cfg?.blog !== false && cfg?.recommend !== false ? {
+    sidebar: [
+      {
+        text: "",
+        items: []
+      }
+    ]
+  } : void 0;
 }
 function patchVPThemeConfig(cfg, vpThemeConfig = {}) {
   const RSS = cfg?.RSS;

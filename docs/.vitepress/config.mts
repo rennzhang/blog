@@ -21,7 +21,8 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        '@blog/theme': path.join(__dirname, '../../src/index.ts')
+        '@blog/theme': path.join(__dirname, '../../src/index.ts'),
+        "@blog": path.join(__dirname, '../../src'),
       }
     },
     optimizeDeps: {

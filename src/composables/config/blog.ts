@@ -16,6 +16,7 @@ import {
 import { useColorMode } from '@vueuse/core'
 
 import type { Theme } from './index'
+import PostData from "../../data/posts.json"
 
 const configSymbol: InjectionKey<Ref<Theme.Config>> = Symbol('theme-config')
 
@@ -91,9 +92,9 @@ export function useGiscusConfig() {
   return blogConfig.config?.blog?.comment
 }
 
+
 export function useArticles() {
-  const blogConfig = useConfig()
-  const articles = computed(() => blogConfig.config?.blog?.pagesData || [])
+  const articles = computed(() => PostData || [])
   return articles
 }
 
