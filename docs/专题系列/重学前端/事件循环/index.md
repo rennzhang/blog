@@ -7,7 +7,7 @@ tags:
  - 异步编程
 # top: 1
 sidebar: false
-sticky: 1
+sticky: 2
 date: 2024-08-08 17:02:59
 ---
 # 重学前端之事件循环模型
