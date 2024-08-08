@@ -240,7 +240,7 @@ date: 2024-08-08 17:02:59
 
     显式将任务添加到微任务队列。可以用来改变某些代码的执行顺序，但如果增加过多`queueMicrotask` ，可能导致其他任务无法执行或延迟， 比如页面渲染任务。
 
-    ```jsx
+```jsx
     console.log('Script start');
 
     setTimeout(() => {
@@ -285,7 +285,14 @@ date: 2024-08-08 17:02:59
     // then
     // Microtask 1
     // setTimeout
-    ```
+```
+
+
+4. **`await`**
+
+使用 `await` 时，函数会暂停执行，直到 `await` 的 Promise 解决（fulfilled 或 rejected）,这段暂停时间允许其他任务执行，不会阻塞主线程。
+
+**当 Promise 解决时，`await` 后面的代码会作为微任务加入微任务队列。**
 
 
 ### 宏任务
