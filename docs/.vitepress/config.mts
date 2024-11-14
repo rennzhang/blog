@@ -114,6 +114,10 @@ export default defineConfig({
           {
             text: "博客配置",
             link:"/专题系列/其他/博客配置/"
+          },
+          {
+            text: "疑难杂症",
+            link:"/专题系列/其他/疑难杂症/"
           }
         ]
       },
