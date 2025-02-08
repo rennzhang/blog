@@ -203,7 +203,7 @@ date: 2024-08-08 17:02:59
 
     // 监听 DOM 变化的回调
     const observer = new MutationObserver(() => {
-    		// 该回调函数会进入为任务队列
+    		// 该回调函数会进入微任务队列
         console.log('MutationObserver');
     });
     observer.observe(document.querySelector('.box'), {
@@ -256,7 +256,7 @@ date: 2024-08-08 17:02:59
 
     // 如果执行下面的无限递归addMicrotask
     // 那么页面上.box textContent永远也不会变化，渲染 dom 是一个宏任务
-    // 微任务没有执行完，控制权不会交换给事件循环，因此无法执行宏任务
+    // 微任务没有执行完，控制权不会交还给事件循环，因此无法执行宏任务
     // function addMicrotask() {
     //     queueMicrotask(() => {
     //         console.log('Microtask executed');
@@ -264,6 +264,7 @@ date: 2024-08-08 17:02:59
     //     });
     // }
     // addMicrotask()
+
     queueMicrotask(() => {
         console.log('Microtask 1');
     });
@@ -284,6 +285,7 @@ date: 2024-08-08 17:02:59
     // Script end
     // then
     // Microtask 1
+    // MutationObserver
     // setTimeout
 ```
 
@@ -293,6 +295,36 @@ date: 2024-08-08 17:02:59
 使用 `await` 时，函数会暂停执行，直到 `await` 的 Promise 解决（fulfilled 或 rejected）,这段暂停时间允许其他任务执行，不会阻塞主线程。
 
 **当 Promise 解决时，`await` 后面的代码会作为微任务加入微任务队列。**
+
+```js
+async function example() {
+    console.log(1);
+    await Promise.resolve();
+    console.log(2);  // 微任务1
+    await Promise.resolve();
+    console.log(3);  // 微任务2
+}
+
+console.log('start');
+example();
+Promise.resolve().then(() => console.log('promise')); // 微任务3
+console.log('end');
+
+// 输出顺序：
+// start
+// 1
+// end
+// 2
+// promise
+// 3
+```
+
+注意以上案例中，在遇到第一个 await 时，后面的这三行代码被整体包装成一个微任务（代称 A）放入微任务队列中，紧接着微任务3（`console.log('promise')`）被放入微任务队列，依次在执行堆栈中执行，执行 A任务时会碰到第二个 await，将其继续放到微任务队列中，所以会在微任务3之后。
+```js
+    console.log(2);  // 微任务1
+    await Promise.resolve();
+    console.log(3);  // 微任务2
+```
 
 
 ### 宏任务
@@ -340,15 +372,14 @@ date: 2024-08-08 17:02:59
 
 
 
-**[任务队列](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)是当前 JavaScript 主线程中所有微任务的集合。** 但和为任务队列不同的是每个事件循环中可以有多个任务队列。
+**[任务队列](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)是当前 JavaScript 主线程中所有微任务的集合。** 但和微任务队列不同的是每个事件循环中可以有多个任务队列。
 
 当页面加载或脚本执行时，最初的同步代码被视为一个宏任务。而此时执行栈是空的，微任务队列也是空的，所以这个“宏任务”会优先执行。
 
 其他的情况则是按照 **执行同步代码 → 执行微任务 → 执行宏任务**的顺序。
 
-> 使用定时器无法实现精准的定时效果，给他们传入延时参数只是最快执行的时间，而实际上即使计时到了，也必须等待所有的同步代码和微任务执行完成。
+> 使用定时器无法实现精准的定时效果，给他们传入延时参数只是最快执行的时间，而实际上即使计时到了，也必须等待所有的同步代码和微任务执行完成。另外，定时器嵌套达到5层后会延时参数最小值会强制从0变为4，这也增大了误差。
 
-    另外，定时器嵌套达到5层后会延时参数最小值会强制从0变为4，这也增大了误差。
 
 
 规范中定义了多个任务的类型，他们有自己关联的任务队列，比如，可能有以下队列：
@@ -376,9 +407,9 @@ For example, a user agent could have one [task queue](https://html.spec.whatwg.
 
 当JavaScript代码在主线程的执行栈中运行时，遇到异步API（如定时器、网络请求、事件监听器等）会触发任务分发：
 
-- **定时器任务：**  由定时器线程管理，到期后将回调函数封装为任务，放入任务队列。
-- **网络请求：**  由IO线程处理，完成后将回调封装为任务，加入网络任务队列。
-- **DOM事件：**  由主线程监听，事件触发时将监听器封装为任务，加入事件任务队列。
+- **定时器任务：**  由定时器线程管理，到期后将回调函数封装微任务，放入任务队列。
+- **网络请求：**  由IO线程处理，完成后将回调封装微任务，加入网络任务队列。
+- **DOM事件：**  由主线程监听，事件触发时将监听器封装微任务，加入事件任务队列。
 - **Promise微任务：**  在当前执行栈清空后，主线程立即处理这些微任务。
 
 接下来等待**事件循环**处理任务队列即可。
