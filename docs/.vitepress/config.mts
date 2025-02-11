@@ -94,10 +94,10 @@ export default defineConfig({
       {
         text: '重学前端',
         items: [
-          // {
-          //   text: "JS 速查表",
-          //   link:"/专题系列/重学前端/JS 速查表/"
-          // },
+          {
+            text: "JS 速查表",
+            link:"/专题系列/重学前端/JS 速查表/"
+          },
           {
             text: "事件循环",
             link:"/专题系列/重学前端/事件循环/"
