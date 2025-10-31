@@ -289,7 +289,7 @@ export default {
   },
 
   mounted() {
-    import('../demo/codemirror.vue').then((module) => {
+    import('../../../demo/codemirror.vue').then((module) => {
       this.dynamicComponent = shallowRef(module.default)
     })
   }

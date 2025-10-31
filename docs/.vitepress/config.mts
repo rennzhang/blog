@@ -1,32 +1,32 @@
-import path from 'path'
-import { defineConfig } from '@blog/theme/node'
-import packageJSON from '../../package.json'
-import { blogTheme, extraHead } from './blog-theme'
+import path from "path";
+import { defineConfig } from "@blog/theme/node";
+import packageJSON from "../../package.json";
+import { blogTheme, extraHead } from "./blog-theme";
 import Components from "unplugin-vue-components/vite";
 import AutoImport from "unplugin-auto-import/vite";
-import UnoCSS from 'unocss/vite'
-import Icons from 'unplugin-icons/vite'
+import UnoCSS from "unocss/vite";
+import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
-import { SearchPlugin } from 'vitepress-plugin-search'
+import { SearchPlugin } from "vitepress-plugin-search";
 export default defineConfig({
   extends: blogTheme,
-  lang: 'zh-cn',
-  title: 'Renkin',
-  titleTemplate:"扯淡日记",
-  description: 'Renkin 的扯淡日记',
+  lang: "zh-cn",
+  title: "Renkin",
+  titleTemplate: "扯淡日记",
+  description: "Renkin 的扯淡日记",
   head: [...extraHead],
   vite: {
     server: {
-      host: '0.0.0.0'
+      host: "0.0.0.0",
     },
     resolve: {
       alias: {
-        '@blog/theme': path.join(__dirname, '../../src/index.ts'),
-        "@blog": path.join(__dirname, '../../src'),
-      }
+        "@blog/theme": path.join(__dirname, "../../src/index.ts"),
+        "@blog": path.join(__dirname, "../../src"),
+      },
     },
     optimizeDeps: {
-      exclude: ['vitepress-plugin-tabs']
+      exclude: ["vitepress-plugin-tabs"],
     },
     // @ts-ignore
     bulid: {
@@ -44,7 +44,7 @@ export default defineConfig({
         allow: [],
         ignore: [],
         // encode: false,
-        tokenize: "full"
+        tokenize: "full",
       }),
       Icons(),
       UnoCSS(),
@@ -67,60 +67,76 @@ export default defineConfig({
       // https://github.com/antfu/vite-plugin-components
       Components({
         dts: true,
-        dirs: ["./src/components","./","src"],
+        dirs: ["./src/components", "./", "src"],
         resolvers: [IconsResolver()],
       }),
     ],
   },
   themeConfig: {
     outline: [2, 4],
-    outlineTitle:"文章目录",
+    outlineTitle: "文章目录",
     search: {
-      provider: 'local',
+      provider: "local",
     },
     footer: {
       message: `Power By <a target="_blank" href="https://theme.sugarat.top/"> @blog/theme@${packageJSON.version} </a>`,
-      copyright: 'MIT License | Copyright © Renkin'
+      copyright: "MIT License | Copyright © Renkin",
     },
     nav: [
       {
-        text: `关于我`,
-        link: '/aboutme'
-      },
-      {
-        text: `我的开源`,
-        link: '/我的开源/'
-      },
-      {
-        text: '重学前端',
+        text: "AI 专题",
         items: [
           {
-            text: "JS 速查表",
-            link:"/专题系列/重学前端/JS 速查表/"
+            text: "AI 工具",
+            link: "/专题系列/AI/AI工具/",
           },
           {
-            text: "事件循环",
-            link:"/专题系列/重学前端/事件循环/"
+            text: "AI Coding 工作流",
+            link: "/专题系列/AI/AICoding工作流/",
           },
           {
-            text: "Javascript",
-            link:"/专题系列/重学前端/javascript/"
-          }
-        ]
+            text: "AI 实战",
+            link: "/专题系列/AI/AI实战/",
+          },
+        ],
       },
+
       {
-        text: '其他',
+        text: "Web 前端",
         items: [
           {
-            text: "博客配置",
-            link:"/专题系列/其他/博客配置/"
+            text: "重学前端",
+            link: "/专题系列/Web 前端/重学前端/",
           },
           {
             text: "疑难杂症",
-            link:"/专题系列/其他/疑难杂症/"
-          }
-        ]
+            link: "/专题系列/Web 前端/疑难杂症/",
+          },
+          {
+            text: "JS 速查表",
+            link: "/专题系列/Web 前端/JS 速查表/",
+          },
+        ],
       },
+
+      {
+        text: "其他",
+        items: [
+          {
+            text: "博客配置",
+            link: "/专题系列/其他/博客配置/",
+          },
+          {
+            text: "我的开源",
+            link: "/专题系列/其他/我的开源/",
+          },
+        ],
+      },
+      {
+        text: `关于我`,
+        link: "/aboutme",
+      },
+
       // {
       //   text: '线上作品',
       //   items: [
@@ -149,18 +165,17 @@ export default defineConfig({
     ],
     socialLinks: [
       {
-        icon: 'github',
-        link: 'https://github.com/rennzhang'
-      }
+        icon: "github",
+        link: "https://github.com/rennzhang",
+      },
     ],
     editLink: {
       // https://github.com/rennzhang/blog/blob/main/docs/changelog.md
-      pattern:
-        'https://github.com/rennzhang/blog/blob/main/docs/:path',
-      text: '去 GitHub 上编辑内容'
+      pattern: "https://github.com/rennzhang/blog/blob/main/docs/:path",
+      text: "去 GitHub 上编辑内容",
     },
-    lastUpdatedText: '上次更新于'
+    lastUpdatedText: "上次更新于",
   },
   lastUpdated: true,
-  ignoreDeadLinks: true
-})
+  ignoreDeadLinks: true,
+});
