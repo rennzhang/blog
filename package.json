@@ -40,8 +40,6 @@
     "watch-content": "npm run build-get-articles && nodemon --watch docs --ext md --exec \"node ./src/utils/node/getArticles.js\"",
     "serve": "vitepress serve docs"
   },
-
-
   "dependencies": {
     "@mdit-vue/shared": "^0.12.0",
     "@mermaid-js/mermaid-mindmap": "^9.3.0",
@@ -65,6 +63,7 @@
     "element-plus": "^2.3.4",
     "flexsearch": "^0.7.31",
     "markdown-it": "^13.0.1",
+    "nodemon": "^3.1.10",
     "sass": "^1.56.1",
     "tsup": " ^6.5.0",
     "typescript": "^4.8.2",

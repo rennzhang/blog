@@ -36,7 +36,7 @@ __export(node_exports, {
 });
 module.exports = __toCommonJS(node_exports);
 
-// node_modules/.pnpm/vitepress-plugin-tabs@0.2.0_vitepress@1.0.0-rc.13_@algolia+client-search@4.20.0_@types+node@1_jrj763at4zrnd3srokhhhjdsmi/node_modules/vitepress-plugin-tabs/dist/index.js
+// node_modules/.pnpm/vitepress-plugin-tabs@0.2.0_vitepress@1.0.0-rc.13_@algolia+client-search@4.20.0_@types+_d8554f6a3bc0be9024c95d9aa5ea2e25/node_modules/vitepress-plugin-tabs/dist/index.js
 var tabsMarker = "=tabs";
 var tabsMarkerLen = tabsMarker.length;
 var ruleBlockTabs = (state, startLine, endLine, silent) => {

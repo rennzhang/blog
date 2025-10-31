@@ -14,9 +14,14 @@
     </div>
     <!-- 文章列表 -->
     <ol class="recommend-container" v-if="currentWikiData.length">
-      <li v-for="(v, idx) in currentWikiData" :key="v.route">
-        <!-- 序号 -->
-        <i class="num">{{ startIdx + idx + 1 }}</i>
+      <li
+        v-for="(v, idx) in currentWikiData"
+        :key="v.route"
+        :class="{ 'summary-item': isSummaryItem(v) }"
+        class="recommend-list-item"
+      >
+        <!-- 序号 - 汇总项不显示序号 -->
+        <i v-if="!isSummaryItem(v)" class="num">{{ getArticleNumber(idx) }}</i>
         <!-- 简介 -->
         <div class="des">
           <!-- title -->
@@ -25,6 +30,7 @@
             class="title"
             :class="{
               current: isCurrentDoc(v.route),
+              'summary-title': isSummaryItem(v)
             }"
             :href="v.route"
           >
@@ -57,7 +63,7 @@ const sidebarStyle = computed(() =>
 
 const recommendPadding = computed(() => (sidebarStyle.value === "card" ? "10px" : "0px"));
 const recommend = computed(() => (_recommend === false ? undefined : _recommend));
-const title = computed(() => recommend.value?.title ?? "🔍 相关文章");
+const title = computed(() => recommend.value?.title ?? "");
 const pageSize = computed(() => recommend.value?.pageSize || 9);
 const nextText = computed(() => recommend.value?.nextText || "换一组");
 const emptyText = computed(() => recommend.value?.empty ?? "暂无相关文章");
@@ -94,13 +100,14 @@ const recommendList = computed(() => {
   const topList: RecommendItem[] = [];
   const endList: RecommendItem[] = [];
   origin.map((v) => {
-    if (!v.meta.recommend) return;
+    // 修复：recommend 为 0 时也应该被处理（0 是有效值）
+    if (v.meta.recommend === undefined || v.meta.recommend === null) return;
     v.meta.recommend < origin.length ? topList.push(v) : endList.push(v);
   });
   topList.sort((a, b) => Number(a.meta.recommend) - Number(b.meta.recommend));
   endList.sort((a, b) => Number(a.meta.recommend) - Number(b.meta.recommend));
 
-  const normalList = origin.filter((v) => !v.meta?.recommend);
+  const normalList = origin.filter((v) => v.meta?.recommend === undefined || v.meta?.recommend === null);
   normalList.sort((a, b) => +new Date(b.meta.date) - +new Date(a.meta.date));
 
   return topList.concat(normalList, endList);
@@ -110,13 +117,30 @@ const isCurrentDoc = (value: string) => {
   return value === decodeURIComponent(route.path).replace(/.html$/, "");
 };
 
+// 判断是否为汇总项
+const isSummaryItem = (item: RecommendItem) => {
+  console.log(`item`,item)
+  return item.route?.includes('/index')
+};
+
+// 计算文章序号（排除汇总项）
+const getArticleNumber = (idx: number) => {
+  // 统计当前索引之前有多少个汇总项
+  let summaryCount = 0;
+  for (let i = 0; i <= idx; i++) {
+    if (isSummaryItem(currentWikiData.value[i])) {
+      summaryCount++;
+    }
+  }
+  // 序号 = 索引 + 1 - 汇总项数量
+  return idx + 1 - summaryCount;
+};
+
 const currentPage = ref(1);
 const changePage = () => {
   const newIdx = currentPage.value % Math.ceil(recommendList.value.length / pageSize.value);
   currentPage.value = newIdx + 1;
 };
-// 当前页开始的序号
-const startIdx = computed(() => (currentPage.value - 1) * pageSize.value);
 
 const currentWikiData = computed(() => {
   const startIdx = (currentPage.value - 1) * pageSize.value;
@@ -181,6 +205,20 @@ const showChangeBtn = computed(() => {
     .suffix {
       font-size: 12px;
       color: var(--vp-c-text-2);
+    }
+  }
+
+  // 汇总项特殊样式 - 简约风格
+  .summary-item {
+    margin-top: -30px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--vp-c-divider-light);
+
+    .summary-title {
+      font-weight: 400;
+      font-size: 16px;
+      color: var(--vp-c-text-1);
     }
   }
 }
