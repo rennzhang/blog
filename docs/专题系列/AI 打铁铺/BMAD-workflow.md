@@ -13,6 +13,7 @@ recommend: 1
 title: 前端 AI-Coding 工程化 | 基于 BMAD 的开发工作流设计
 description: 以 BMAD 4.4 方法为核心，结合企业内部已有的产品研发体系，实现从 PRD 到开发交付的完整闭环。采用"多角色 + 多会话 + 人工复核 + 上下文交接包"机制，减少 AI 幻觉、提升交付质量。
 cover: ""
+top: 1
 ---
 
 # 前端 AI-Coding 工程化 | 基于 BMAD 的开发工作流设计

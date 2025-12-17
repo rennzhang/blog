@@ -9,7 +9,7 @@ tags:
   - LLM
 sidebar: false
 sticky: 2
-date: 2024-12-17 00:00:00
+date: 2025-12-17 00:00:00
 recommend: 2
 title: UI 还原最后一公里：从自动化幻觉到人机协同微调
 description: 一份关于 Figma-to-Code 工程实践的技术白皮书。记录了从全自动化方案的期待，到 Visual-Fixer 的设计与实现，再到通过实证数据认清其局限性，最终转向人机协同微调新范式的完整技术探索。
