@@ -59,6 +59,32 @@ cover: ""
 - 前端问题解决 → `专题系列/Web 前端/疑难杂症/`
 - JS 速查 → `专题系列/Web 前端/JS 速查表/`
 
+### AI 打铁铺文章规范
+
+AI 打铁铺是博客的核心专题，文章默认展示在首页。新增文章时：
+
+1. **必须添加 `sticky: 1`** - AI 打铁铺的最新文章默认置顶首页
+2. **更新旧文章置顶** - 新文章发布后，将之前置顶文章的 `sticky` 值改为 `2` 或移除
+3. **推荐级别** - 使用 `recommend: 1` 表示高推荐度
+
+示例 frontmatter：
+```yaml
+---
+group:
+  title: AI 打铁铺
+tags:
+  - AI
+  - [其他相关标签]
+sidebar: false
+sticky: 1
+date: [YYYY-MM-DD HH:mm:ss]
+recommend: 1
+title: [文章标题]
+description: [文章描述，100字以内]
+cover: ""
+---
+```
+
 ### 文件命名
 
 - 使用英文或拼音，多个单词用 `-` 连接
