@@ -1,17 +1,18 @@
 ---
 group:
- title: AI
+  title: AI 打铁铺
 tags:
- - AI
- - 人工智能
- - BMAD
- - AI Coding
- - AI 工作流
-top: 1
+  - AI
+  - BMAD
+  - AI Coding
+  - 工作流
 sidebar: false
 sticky: 1
 date: 2025-10-31 00:00:00
 recommend: 1
+title: 前端 AI-Coding 工程化 | 基于 BMad 的开发工作流设计思路
+description: 以 BMAD 4.4 方法为核心，结合企业内部已有的产品研发体系，实现从 PRD 到开发交付的完整闭环。采用"多角色 + 多会话 + 人工复核 + 上下文交接包"机制，减少 AI 幻觉、提升交付质量。
+cover: ""
 ---
 
 
