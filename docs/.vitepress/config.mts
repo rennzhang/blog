@@ -8,6 +8,7 @@ import UnoCSS from "unocss/vite";
 import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import { SearchPlugin } from "vitepress-plugin-search";
+import { postsHMRPlugin } from "./plugins/posts-hmr";
 export default defineConfig({
   extends: blogTheme,
   lang: "zh-cn",
@@ -18,6 +19,10 @@ export default defineConfig({
   vite: {
     server: {
       host: "0.0.0.0",
+      watch: {
+        // 监听 posts.json 文件变化以支持热更新
+        ignored: ['!**/src/data/posts.json']
+      }
     },
     resolve: {
       alias: {
@@ -37,6 +42,7 @@ export default defineConfig({
       },
     },
     plugins: [
+      postsHMRPlugin(), // 添加 posts.json 热更新插件
       SearchPlugin({
         previewLength: 62,
         buttonLabel: "Search",
