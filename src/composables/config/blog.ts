@@ -16,7 +16,7 @@ import {
 import { useColorMode } from '@vueuse/core'
 
 import type { Theme } from './index'
-import PostData from "../../data/posts.json"
+import PostData from 'virtual:blog-content'
 
 const configSymbol: InjectionKey<Ref<Theme.Config>> = Symbol('theme-config')
 

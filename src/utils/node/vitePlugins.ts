@@ -1,4 +1,5 @@
 import type { SiteConfig } from 'vitepress'
+import { getArticles } from './theme'
 import path from 'path'
 import { execSync } from 'child_process'
 import type { Theme } from '../../composables/config/index'
@@ -20,8 +21,56 @@ export function getVitePlugins(cfg?: Partial<Theme.BlogConfig>) {
   //   plugins.push(inlinePagefindPlugin(buildEndFn))
   // }
 
+
   buildEndFn.push(genFeed)
+  plugins.push(blogContentPlugin(cfg))
   return plugins
+}
+
+export function blogContentPlugin(cfg?: Partial<Theme.BlogConfig>) {
+  const virtualModuleId = 'virtual:blog-content'
+  const resolvedVirtualModuleId = '\0' + virtualModuleId
+
+  const reloadVirtualModule = (server: any) => {
+    const mod = server.moduleGraph.getModuleById(resolvedVirtualModuleId)
+    if (mod) {
+      server.moduleGraph.invalidateModule(mod)
+      server.ws.send({
+        type: 'full-reload',
+        path: '*'
+      })
+    }
+  }
+
+  return {
+    name: 'vite-plugin-blog-content',
+    resolveId(id: string) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId
+      }
+    },
+    load(id: string) {
+      if (id === resolvedVirtualModuleId) {
+        const data = getArticles(cfg)
+        return `export default ${JSON.stringify(data)}`
+      }
+    },
+    configureServer(server: any) {
+      // 监听文件删除事件
+      server.watcher.on('unlink', (file: string) => {
+        if (file.endsWith('.md')) {
+          console.log('\n🗑️  文章已删除，重新生成文章列表...')
+          reloadVirtualModule(server)
+        }
+      })
+    },
+    handleHotUpdate(ctx: any) {
+      const { file, server } = ctx
+      if (file.endsWith('.md')) {
+        reloadVirtualModule(server)
+      }
+    }
+  }
 }
 
 export function registerVitePlugins(vpCfg: any, plugins: any[]) {

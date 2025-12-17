@@ -374,14 +374,14 @@ function supportRunExtendsPlugin(config) {
 }
 
 // src/utils/node/getArticles.ts
-var import_fast_glob = require("fast-glob");
+var import_fast_glob = __toESM(require("fast-glob"));
 var import_gray_matter = __toESM(require("gray-matter"));
 var import_path = __toESM(require("path"));
 var import_fs = __toESM(require("fs"));
 var pageMap = /* @__PURE__ */ new Map();
 function getArticles(cfg) {
   const srcDir = cfg?.srcDir || process.argv.slice(2)?.[1] || ".";
-  const files = import_fast_glob.glob.sync(`${srcDir}/**/*.md`, { ignore: ["node_modules"] });
+  const files = import_fast_glob.default.sync(`${srcDir}/**/*.md`, { ignore: ["node_modules"] });
   const data = files.map((v) => {
     let route = v.replace(".md", "");
     if (route.startsWith("./")) {
@@ -434,16 +434,6 @@ function getArticles(cfg) {
   }).filter((v) => v.meta.layout !== "home");
   return data;
 }
-function getPosts(cfg) {
-  const data = getArticles(cfg);
-  import_fs.default.writeFileSync(
-    import_path.default.join(process.cwd(), "src/data/posts.json"),
-    JSON.stringify(data)
-  );
-  console.log(" pageMap", pageMap, data);
-  return data;
-}
-getPosts();
 
 // src/utils/node/theme.ts
 function patchDefaultThemeSideBar(cfg) {
@@ -553,7 +543,50 @@ function getVitePlugins(cfg) {
   const buildEndFn = [];
   plugins.push(inlineBuildEndPlugin(buildEndFn));
   buildEndFn.push(genFeed);
+  plugins.push(blogContentPlugin(cfg));
   return plugins;
+}
+function blogContentPlugin(cfg) {
+  const virtualModuleId = "virtual:blog-content";
+  const resolvedVirtualModuleId = "\0" + virtualModuleId;
+  const reloadVirtualModule = (server) => {
+    const mod = server.moduleGraph.getModuleById(resolvedVirtualModuleId);
+    if (mod) {
+      server.moduleGraph.invalidateModule(mod);
+      server.ws.send({
+        type: "full-reload",
+        path: "*"
+      });
+    }
+  };
+  return {
+    name: "vite-plugin-blog-content",
+    resolveId(id) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId;
+      }
+    },
+    load(id) {
+      if (id === resolvedVirtualModuleId) {
+        const data = getArticles(cfg);
+        return `export default ${JSON.stringify(data)}`;
+      }
+    },
+    configureServer(server) {
+      server.watcher.on("unlink", (file) => {
+        if (file.endsWith(".md")) {
+          console.log("\n\u{1F5D1}\uFE0F  \u6587\u7AE0\u5DF2\u5220\u9664\uFF0C\u91CD\u65B0\u751F\u6210\u6587\u7AE0\u5217\u8868...");
+          reloadVirtualModule(server);
+        }
+      });
+    },
+    handleHotUpdate(ctx) {
+      const { file, server } = ctx;
+      if (file.endsWith(".md")) {
+        reloadVirtualModule(server);
+      }
+    }
+  };
 }
 function registerVitePlugins(vpCfg, plugins) {
   vpCfg.vite = {

@@ -9,6 +9,7 @@ import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import { SearchPlugin } from "vitepress-plugin-search";
 import { postsHMRPlugin } from "./plugins/posts-hmr";
+import { blogContentPlugin } from "../../src/utils/node/vitePlugins";
 export default defineConfig({
   extends: blogTheme,
   lang: "zh-cn",
@@ -42,6 +43,7 @@ export default defineConfig({
       },
     },
     plugins: [
+      blogContentPlugin(),
       postsHMRPlugin(), // 添加 posts.json 热更新插件
       SearchPlugin({
         previewLength: 62,
@@ -90,21 +92,8 @@ export default defineConfig({
     },
     nav: [
       {
-        text: "AI 专题",
-        items: [
-          {
-            text: "AI 工具",
-            link: "/专题系列/AI/AI工具/",
-          },
-          {
-            text: "AI Coding 工作流",
-            link: "/专题系列/AI/AICoding工作流/",
-          },
-          {
-            text: "AI 实战",
-            link: "/专题系列/AI/AI实战/",
-          },
-        ],
+        text: "AI 打铁铺",
+        link: "/专题系列/AI 打铁铺/",
       },
 
       {

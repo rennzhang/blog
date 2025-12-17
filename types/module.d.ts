@@ -14,6 +14,12 @@ declare module "~icons*" {
   export default result;
 }
 
+declare module 'virtual:blog-content' {
+  import { Theme } from '@/composables/config/index'
+  const PostData: Theme.PageData[]
+  export default PostData
+}
+
 declare module "*.less" {
   const content: any;
   export default content;

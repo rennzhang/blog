@@ -30,7 +30,8 @@
   "license": "MIT",
   "homepage": "https://renkin.cn/",
   "scripts": {
-    "start": "npm-run-all --parallel prepare-dev watch-content",
+    "start": "npm-run-all --parallel dev watch-content",
+    "dev": "vitepress dev docs",
     "prepare-dev": "npm run build-node && vitepress dev docs",
     "start-node": "tsup src/node.ts --dts --out-dir=./ --watch docs --ext md --external vitepress",
     "build": "npm-run-all build-node build-get-articles build-docs",

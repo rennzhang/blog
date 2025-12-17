@@ -35,7 +35,7 @@ __export(getArticles_exports, {
   pageMap: () => pageMap
 });
 module.exports = __toCommonJS(getArticles_exports);
-var import_fast_glob = require("fast-glob");
+var import_fast_glob = __toESM(require("fast-glob"));
 var import_gray_matter = __toESM(require("gray-matter"));
 var import_path = __toESM(require("path"));
 var import_fs = __toESM(require("fs"));
@@ -126,7 +126,7 @@ function getTextSummary(text, count = 100) {
 var pageMap = /* @__PURE__ */ new Map();
 function getArticles(cfg) {
   const srcDir = cfg?.srcDir || process.argv.slice(2)?.[1] || ".";
-  const files = import_fast_glob.glob.sync(`${srcDir}/**/*.md`, { ignore: ["node_modules"] });
+  const files = import_fast_glob.default.sync(`${srcDir}/**/*.md`, { ignore: ["node_modules"] });
   const data = files.map((v) => {
     let route = v.replace(".md", "");
     if (route.startsWith("./")) {
@@ -181,14 +181,15 @@ function getArticles(cfg) {
 }
 function getPosts(cfg) {
   const data = getArticles(cfg);
-  import_fs.default.writeFileSync(
-    import_path.default.join(process.cwd(), "src/data/posts.json"),
-    JSON.stringify(data)
-  );
-  console.log(" pageMap", pageMap, data);
+  if (require.main === module) {
+    import_fs.default.writeFileSync(
+      import_path.default.join(process.cwd(), "src/data/posts.json"),
+      JSON.stringify(data)
+    );
+    console.log(" pageMap", pageMap, data);
+  }
   return data;
 }
-getPosts();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   getArticles,

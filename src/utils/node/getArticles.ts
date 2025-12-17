@@ -1,4 +1,4 @@
-import { glob } from "fast-glob"
+import fg from "fast-glob"
 import matter from "gray-matter"
 import path from "path"
 import fs from 'fs'
@@ -11,7 +11,7 @@ export const pageMap = new Map<string, string>()
 
 export function getArticles(cfg?: Partial<Theme.BlogConfig>) {
   const srcDir = cfg?.srcDir || process.argv.slice(2)?.[1] || '.'
-  const files = glob.sync(`${srcDir}/**/*.md`, { ignore: ['node_modules'] })
+  const files = fg.sync(`${srcDir}/**/*.md`, { ignore: ['node_modules'] })
 
   // 文章数据
   const data = files
@@ -96,18 +96,19 @@ export function getArticles(cfg?: Partial<Theme.BlogConfig>) {
   return data as Theme.PageData[]
 }
 
+
 // 执行getArticles，并把pageMap写入文件
 export function getPosts(cfg?: Partial<Theme.BlogConfig>) {
   const data = getArticles(cfg)
-  fs.writeFileSync(
-    path.join(process.cwd(), 'src/data/posts.json'),
-    JSON.stringify(data)
-  )
-  console.log(" pageMap",pageMap,data)
-
+  // 如果是build模式，可以写入文件，但这里主要是给虚拟模块用的
+  // 保持原有逻辑，如果是直接运行此文件（比如通过 node 执行）
+  if (require.main === module) {
+    fs.writeFileSync(
+      path.join(process.cwd(), 'src/data/posts.json'),
+      JSON.stringify(data)
+    )
+    console.log(" pageMap",pageMap,data)
+  }
   return data
 }
 
-
-
- getPosts()
